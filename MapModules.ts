@@ -2,11 +2,7 @@ function mapModulesUG(userWS: string) {
   // Set references to map sheet and module matrix
   const map: Excel.Worksheet = Excel.Workbook.getActiveWorkbook().getWorksheet("Y1+Y2+Y3");
   const matrix: Excel.Worksheet = Excel.Workbook.getActiveWorkbook().getWorksheet(userWS);
-
-  // Find the last used row in column C of map sheet
   const lastRowMapping: number = map.getRange("C" + map.getUsedRange().getRowCount()).getEnd(ExcelScript.Direction.up).getRow();
-
-  // Start mapping strings; adapt cell as necessary.
   let targetCell: Excel.Range = matrix.getRange("A13");
 
   // Loop through each cell in column of mapping sheet; adapt range as necessary.
@@ -15,11 +11,10 @@ function mapModulesUG(userWS: string) {
       // Map the string value to module matrix
       targetCell.setValue(sourceCell[0]);
       
-      // Outputting learning outcomes
       let outcomeCell: Excel.Range = sourceCell.getOffset(1, 7);
       
       let n: number = 1;
-      // Iterates through each 25 learning outcomes in UG Integrated; change if more or less
+      // Iterates through each 25 learning outcomes in Undergraduate Course
       while (n < 25) {
         const colJLetter: string = outcomeCell.getAddress().split('$')[1] + "3"; // Get column letter of outcomeCell
         const JCell: Excel.Range = map.getRange(colJLetter);
@@ -52,9 +47,9 @@ function mapModulesUG(userWS: string) {
     }
   }
   
-  // Removing column data from EQF levels below 7 (e.g M6*, M8*, M9*, etc..)
+  // Removing column data from EQF levels below 7 
   for (let outcomeCell of matrix.getRange("D10:U10").getValues()) {
-    const columnLetter: string = outcomeCell.getAddress().split('$')[1]; // Get the column letter
+    const columnLetter: string = outcomeCell.getAddress().split('$')[1];
     if (outcomeCell[0].charAt(outcomeCell[0].length - 1) === "*") {
       matrix.getRange(columnLetter + "13:" + columnLetter + "50").clear(ExcelScript.ClearApplyTo.contents);
     }
